@@ -5,10 +5,12 @@ const { sequelize } = require('./src/config/database');
 
 const app = express();
 
-app.use(cors({
-  origin: 'http://localhost:5173',
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || '*',
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use('/api/auth', require('./src/routes/authRoutes'));
