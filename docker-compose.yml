@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16-alpine # Versión ligera y estable
+    container_name: ventas_db
+    environment:
+      POSTGRES_USER: jarold
+      POSTGRES_PASSWORD: Jarold1984** # Cambia esto
+      POSTGRES_DB: sistema_ventas
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
