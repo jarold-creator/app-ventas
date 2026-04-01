@@ -235,8 +235,8 @@ export default function Products() {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`badge ${badge.class}`}>
-                            {badge.label} ({product.stock})
+                          <span className={`badge ${badge.class}`} title={badge.label}>
+                            {product.stock}
                           </span>
                         </td>
                         <td className="px-6 py-4 text-right">
