@@ -1,5 +1,5 @@
 app = "app-ventas"
-region = "iad"
+primary_region = "iad"
 
 [build]
   dockerfile = "backend/Dockerfile"
@@ -11,9 +11,7 @@ region = "iad"
 [[services]]
   http_checks = []
   internal_port = 3000
-  processes = ["app"]
   protocol = "tcp"
-  script = null
 
   [services.concurrency]
     hard_limit = 25
@@ -28,18 +26,11 @@ region = "iad"
     handlers = ["tls", "http"]
     port = 443
 
-  [[services.tcp_checks]]
-    grace_period = "1s"
-    interval = "15s"
-    restart_limit = 5
-    timeout = "2s"
-
-[processes]
-  app = "node server.js"
-
-[[statics]]
-  guest_paths = ["/app/public"]
-  handlers = ["fallback"]
+[[services.tcp_checks]]
+  grace_period = "1s"
+  interval = "15s"
+  restart_limit = 5
+  timeout = "2s"
 
 [metrics]
   port = 9090
