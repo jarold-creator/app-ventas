@@ -72,16 +72,31 @@ exports.createInvoice = async (req, res) => {
 
 exports.getInvoices = async (req, res) => {
   try {
-    console.log('Fetching invoices...');
-    const invoices = await Invoice.findAll({
+    const { page = 1, limit = 10 } = req.query;
+    const offset = (page - 1) * limit;
+    
+    const { count, rows: invoices } = await Invoice.findAndCountAll({
       include: [
         { model: InvoiceItem, include: [Product] },
         { model: User, attributes: ['id', 'name', 'email'] }
       ],
-      order: [['created_at', 'DESC']]
+      order: [['created_at', 'DESC']],
+      limit: parseInt(limit),
+      offset: parseInt(offset)
     });
-    console.log('Invoices found:', invoices.length);
-    res.json(invoices);
+    
+    const totalPages = Math.ceil(count / limit);
+    res.json({
+      invoices,
+      pagination: {
+        total: count,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1
+      }
+    });
   } catch (error) {
     console.error('Error fetching invoices:', error);
     res.status(500).json({ error: error.message });

@@ -36,7 +36,7 @@ export const authService = {
 }
 
 export const productService = {
-  getAll: () => api.get('/products'),
+  getAll: (page = 1, limit = 10) => api.get('/products', { params: { page, limit } }),
   getStock: () => api.get('/products/stock'),
   create: (data) => api.post('/products', data),
   update: (id, data) => api.put(`/products/${id}`, data),
@@ -45,7 +45,7 @@ export const productService = {
 
 export const invoiceService = {
   create: (data) => api.post('/invoices', data),
-  getAll: () => api.get('/invoices'),
+  getAll: (page = 1, limit = 10) => api.get('/invoices', { params: { page, limit } }),
   getById: (id) => api.get(`/invoices/${id}`)
 }
 

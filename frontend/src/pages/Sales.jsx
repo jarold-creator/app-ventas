@@ -20,9 +20,9 @@ export default function Sales() {
 
   const loadData = async () => {
     try {
-      const { data } = await productService.getAll()
-      setAllProducts(data)
-      setProducts(data)
+      const { data } = await productService.getAll(1, 1000)
+      setAllProducts(data.products)
+      setProducts(data.products)
     } catch (error) {
       console.error('Error loading data:', error)
     } finally {

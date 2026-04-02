@@ -2,8 +2,27 @@ const { Product } = require('../models');
 
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.findAll({ order: [['created_at', 'DESC']] });
-    res.json(products);
+    const { page = 1, limit = 10 } = req.query;
+    const offset = (page - 1) * limit;
+    
+    const { count, rows: products } = await Product.findAndCountAll({
+      order: [['created_at', 'DESC']],
+      limit: parseInt(limit),
+      offset: parseInt(offset)
+    });
+    
+    const totalPages = Math.ceil(count / limit);
+    res.json({
+      products,
+      pagination: {
+        total: count,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1
+      }
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

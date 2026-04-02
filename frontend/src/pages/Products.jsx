@@ -12,24 +12,30 @@ export default function Products() {
   const [deleteConfirm, setDeleteConfirm] = useState({ show: false, product: null })
   const [searchTerm, setSearchTerm] = useState('')
   const [filterCategory, setFilterCategory] = useState('all')
+  const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 0, hasNext: false, hasPrev: false })
   const { logout } = useAuth()
 
   const categories = ['General', 'Electrónica', 'Ropa', 'Alimentos', 'Hogar', 'Deportes', 'Otros']
 
-  useEffect(() => {
-    loadProducts()
-  }, [])
-
-  const loadProducts = async () => {
+  const loadProducts = async (page = 1) => {
     try {
-      const { data } = await productService.getAll()
-      setProducts(data)
+      setLoading(true)
+      const { data } = await productService.getAll(page, pagination.limit)
+      setProducts(data.products)
+      setPagination(prev => ({
+        ...prev,
+        ...data.pagination
+      }))
     } catch (error) {
       console.error('Error loading products:', error)
     } finally {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    loadProducts(1)
+  }, [])
 
   const filteredProducts = products.filter(product => {
     if (filterCategory !== 'all' && product.category !== filterCategory) return false
@@ -55,7 +61,7 @@ export default function Products() {
       setShowModal(false)
       setEditingProduct(null)
       setForm({ name: '', description: '', price: '', costPrice: '', stock: '', category: 'General' })
-      loadProducts()
+      loadProducts(pagination.page)
     } catch (error) {
       console.error('Error saving product:', error)
     }
@@ -78,7 +84,7 @@ export default function Products() {
     try {
       await productService.delete(id)
       setDeleteConfirm({ show: false, product: null })
-      loadProducts()
+      loadProducts(pagination.page)
     } catch (error) {
       console.error('Error deleting product:', error)
     }
@@ -260,6 +266,32 @@ export default function Products() {
                   })}
                 </tbody>
               </table>
+              {pagination.totalPages > 1 && (
+                <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100 dark:border-slate-700/50">
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    Mostrando {((pagination.page - 1) * pagination.limit) + 1} - {Math.min(pagination.page * pagination.limit, pagination.total)} de {pagination.total}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => loadProducts(pagination.page - 1)}
+                      disabled={!pagination.hasPrev}
+                      className="px-3 py-2 text-sm font-medium rounded-lg border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Anterior
+                    </button>
+                    <span className="px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+                      Página {pagination.page} de {pagination.totalPages}
+                    </span>
+                    <button
+                      onClick={() => loadProducts(pagination.page + 1)}
+                      disabled={!pagination.hasNext}
+                      className="px-3 py-2 text-sm font-medium rounded-lg border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Siguiente
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
