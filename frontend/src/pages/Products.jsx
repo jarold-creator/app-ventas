@@ -151,13 +151,13 @@ export default function Products() {
                     placeholder="Buscar..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="input-field pl-10 w-full sm:w-40 lg:w-64"
+                    className="input-field pl-10 w-full sm:w-40 lg:w-64 h-12"
                   />
                 </div>
                 <select
                   value={filterCategory}
                   onChange={(e) => setFilterCategory(e.target.value)}
-                  className="input-field py-2 w-full sm:w-auto"
+                  className="input-field py-3 w-full sm:w-auto h-12"
                 >
                   <option value="all">Todas las categorías</option>
                   {categories.map(cat => (
