@@ -41,13 +41,25 @@ const icons = {
 }
 
 export default function Sidebar() {
-  const { sidebarOpen, toggleSidebar } = useSidebar()
+  const { sidebarOpen, toggleSidebar, mobileOpen, setMobileOpen, toggleMobile, closeMobile } = useSidebar()
   const { logout, user } = useAuth()
   const { darkMode, toggleDarkMode } = useTheme()
   const location = useLocation()
 
+  const sidebarClasses = `bg-white dark:bg-slate-800 border-r border-slate-200/50 dark:border-slate-700/50 flex flex-col transition-all duration-300 fixed lg:relative z-50 lg:z-auto ${
+    sidebarOpen ? 'lg:w-64' : 'lg:w-20'
+  } ${
+    mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+  } w-64 h-screen`
+
+  const overlayClasses = `fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity ${
+    mobileOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+  }`
+
   return (
-    <aside className={`bg-white dark:bg-slate-800 border-r border-slate-200/50 dark:border-slate-700/50 flex flex-col transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-20'}`}>
+    <>
+      <div className={overlayClasses} onClick={closeMobile} />
+      <aside className={sidebarClasses}>
       <div className="p-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
@@ -165,5 +177,6 @@ export default function Sidebar() {
         </button>
       </div>
     </aside>
+    </>
   )
 }

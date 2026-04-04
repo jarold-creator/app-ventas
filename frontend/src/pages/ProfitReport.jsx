@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useSidebar } from '../context/SidebarContext'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import { profitService } from '../services/api'
 import Sidebar from '../components/Sidebar'
@@ -17,6 +18,7 @@ export default function ProfitReport() {
     lowMarginProducts: [],
     salesByDay: []
   })
+  const { toggleMobile } = useSidebar()
   const [dateRange, setDateRange] = useState({
     startDate: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0],
     endDate: new Date().toISOString().split('T')[0]
@@ -203,13 +205,23 @@ export default function ProfitReport() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex">
       <Sidebar />
 
-      <main className="flex-1 p-8 overflow-auto">
-        <header className="flex justify-between items-center mb-8">
-          <div className="animate-fade-in">
-            <h2 className="text-3xl font-semibold text-slate-800 dark:text-white">Reporte de Ganancias</h2>
-            <p className="text-slate-500 dark:text-slate-400 mt-1">Análisis de rentabilidad por período</p>
+      <main className="flex-1 w-full lg:ml-0 p-4 lg:p-8 overflow-auto">
+        <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6 lg:mb-8">
+          <div className="flex items-center gap-3 animate-fade-in">
+            <button
+              onClick={toggleMobile}
+              className="lg:hidden p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+            >
+              <svg className="w-6 h-6 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div>
+              <h2 className="text-2xl lg:text-3xl font-semibold text-slate-800 dark:text-white">Reporte de Ganancias</h2>
+              <p className="text-slate-500 dark:text-slate-400 mt-1">Análisis de rentabilidad por período</p>
+            </div>
           </div>
-          <div class="flex items-center gap-4 animate-fade-in">
+          <div className="flex flex-wrap items-center gap-3 lg:gap-4 animate-fade-in w-full lg:w-auto">
             <button
               onClick={exportToPDF}
               className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"

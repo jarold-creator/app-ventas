@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useSidebar } from '../context/SidebarContext'
 import { productService } from '../services/api'
 import Sidebar from '../components/Sidebar'
 
@@ -14,6 +15,7 @@ export default function Products() {
   const [filterCategory, setFilterCategory] = useState('all')
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 0, hasNext: false, hasPrev: false })
   const { logout } = useAuth()
+  const { toggleMobile } = useSidebar()
 
   const categories = ['General', 'Electrónica', 'Ropa', 'Alimentos', 'Hogar', 'Deportes', 'Otros']
 
@@ -121,13 +123,23 @@ export default function Products() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex">
       <Sidebar />
 
-      <main className="flex-1 p-8 overflow-auto">
-        <header className="flex justify-between items-center mb-8">
-          <div className="animate-fade-in">
-            <h2 className="text-3xl font-semibold text-slate-800 dark:text-white">Productos</h2>
-            <p className="text-slate-500 dark:text-slate-400 mt-1">{filteredProducts.length} {filteredProducts.length === 1 ? 'producto' : 'productos'} {searchTerm && `de ${products.length}`}</p>
+      <main className="flex-1 w-full lg:ml-0 p-4 lg:p-8 overflow-auto">
+        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 lg:mb-8">
+          <div className="flex items-center gap-3 animate-fade-in">
+            <button
+              onClick={toggleMobile}
+              className="lg:hidden p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+            >
+              <svg className="w-6 h-6 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div>
+              <h2 className="text-2xl lg:text-3xl font-semibold text-slate-800 dark:text-white">Productos</h2>
+              <p className="text-slate-500 dark:text-slate-400 mt-1">{filteredProducts.length} {filteredProducts.length === 1 ? 'producto' : 'productos'} {searchTerm && `de ${products.length}`}</p>
+            </div>
           </div>
-          <div className="flex items-center gap-4 animate-fade-in">
+          <div className="flex flex-wrap items-center gap-3 lg:gap-4 animate-fade-in w-full sm:w-auto">
             {products.length > 0 && (
               <>
                 <div className="relative">
@@ -136,16 +148,16 @@ export default function Products() {
                   </svg>
                   <input
                     type="text"
-                    placeholder="Buscar producto..."
+                    placeholder="Buscar..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="input-field pl-12 w-64"
+                    className="input-field pl-10 w-full sm:w-40 lg:w-64"
                   />
                 </div>
                 <select
                   value={filterCategory}
                   onChange={(e) => setFilterCategory(e.target.value)}
-                  className="input-field py-2"
+                  className="input-field py-2 w-full sm:w-auto"
                 >
                   <option value="all">Todas las categorías</option>
                   {categories.map(cat => (

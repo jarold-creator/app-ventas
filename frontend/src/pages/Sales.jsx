@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useSidebar } from '../context/SidebarContext'
 import { productService, invoiceService } from '../services/api'
 import Sidebar from '../components/Sidebar'
 
@@ -13,6 +14,7 @@ export default function Sales() {
   const [quantities, setQuantities] = useState({})
   const [notification, setNotification] = useState(null)
   const { logout } = useAuth()
+  const { toggleMobile } = useSidebar()
 
   useEffect(() => {
     loadData()
@@ -149,7 +151,7 @@ export default function Sales() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex">
       {notification && (
-        <div className={`fixed top-4 right-4 px-5 py-3 rounded-xl shadow-lg z-50 animate-slide-in flex items-center gap-2 ${
+        <div className={`fixed top-4 right-4 left-4 md:left-auto px-5 py-3 rounded-xl shadow-lg z-50 animate-slide-in flex items-center gap-2 ${
           notification.type === 'error' 
             ? 'bg-red-500 text-white' 
             : notification.type === 'warning'
@@ -173,9 +175,19 @@ export default function Sales() {
 
       <Sidebar />
 
-      <main className="flex-1 p-8 overflow-auto">
-        <header className="mb-8 animate-fade-in">
-          <h2 className="text-3xl font-semibold text-slate-800 dark:text-white">Nueva Venta</h2>
+      <main className="flex-1 w-full lg:ml-0 p-4 lg:p-8 overflow-auto">
+        <header className="mb-6 lg:mb-8 animate-fade-in">
+          <div className="flex items-center gap-3 mb-2">
+            <button
+              onClick={toggleMobile}
+              className="lg:hidden p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+            >
+              <svg className="w-6 h-6 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <h2 className="text-2xl lg:text-3xl font-semibold text-slate-800 dark:text-white">Nueva Venta</h2>
+          </div>
           <p className="text-slate-500 dark:text-slate-400 mt-1">Ingresa la cantidad y agrega productos</p>
         </header>
 

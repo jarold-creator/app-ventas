@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts'
 import { dashboardService } from '../services/api'
 import Sidebar from '../components/Sidebar'
+import { useSidebar } from '../context/SidebarContext'
 
 const statCards = [
   { key: 'total', label: 'Ventas de Hoy', icon: 'currency', color: 'primary' },
@@ -60,6 +61,7 @@ export default function Dashboard() {
     recentInvoices: [] 
   })
   const [loading, setLoading] = useState(true)
+  const { toggleMobile } = useSidebar()
 
   useEffect(() => {
     loadStats()
@@ -100,21 +102,31 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex">
-      <Sidebar />
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex">
+        <Sidebar />
 
-      <main className="flex-1 p-8 overflow-auto">
-        <header className="flex justify-between items-start mb-8">
-          <div className="animate-fade-in">
-            <h2 className="text-3xl font-semibold text-slate-800 dark:text-white">Dashboard</h2>
-            <p className="text-slate-500 dark:text-slate-400 mt-1">Resumen de tu negocio</p>
+        <main className="flex-1 w-full lg:ml-0 p-4 lg:p-8 overflow-auto">
+        <header className="flex justify-between items-start mb-6 lg:mb-8">
+          <div className="flex items-center gap-3 animate-fade-in">
+            <button
+              onClick={toggleMobile}
+              className="lg:hidden p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+            >
+              <svg className="w-6 h-6 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div>
+              <h2 className="text-2xl lg:text-3xl font-semibold text-slate-800 dark:text-white">Dashboard</h2>
+              <p className="text-slate-500 dark:text-slate-400 mt-1 hidden sm:block">Resumen de tu negocio</p>
+            </div>
           </div>
           <div className="text-right animate-fade-in">
             <p className="text-sm text-slate-500 dark:text-slate-400 capitalize">{today}</p>
           </div>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6 mb-6 lg:mb-8">
           {statCards.map((card, index) => {
             const colors = colorClasses[card.color]
             const value = getValue(card.key)

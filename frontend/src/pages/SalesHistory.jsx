@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useSidebar } from '../context/SidebarContext'
 import { invoiceService } from '../services/api'
 import Sidebar from '../components/Sidebar'
 import InvoiceModal from '../components/InvoiceModal'
@@ -14,6 +15,7 @@ export default function SalesHistory() {
   const [printInvoice, setPrintInvoice] = useState(null)
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 0, hasNext: false, hasPrev: false })
   const { logout } = useAuth()
+  const { toggleMobile } = useSidebar()
 
   useEffect(() => {
     loadInvoices(1)
@@ -71,9 +73,19 @@ export default function SalesHistory() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex">
       <Sidebar />
 
-      <main className="flex-1 p-8 overflow-auto">
-        <header className="mb-8 animate-fade-in">
-          <h2 className="text-3xl font-semibold text-slate-800 dark:text-white">Historial de Ventas</h2>
+      <main className="flex-1 w-full lg:ml-0 p-4 lg:p-8 overflow-auto">
+        <header className="mb-6 lg:mb-8 animate-fade-in">
+          <div className="flex items-center gap-3 mb-2">
+            <button
+              onClick={toggleMobile}
+              className="lg:hidden p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+            >
+              <svg className="w-6 h-6 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <h2 className="text-2xl lg:text-3xl font-semibold text-slate-800 dark:text-white">Historial de Ventas</h2>
+          </div>
           <p className="text-slate-500 dark:text-slate-400 mt-1">{filteredInvoices.length} {filteredInvoices.length === 1 ? 'factura' : 'facturas'} {searchTerm && `de ${pagination.total}`}</p>
         </header>
 
@@ -85,10 +97,10 @@ export default function SalesHistory() {
               </svg>
               <input
                 type="text"
-                placeholder="Buscar por número de factura, fecha, usuario o total..."
+                placeholder="Buscar..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="input-field pl-12"
+                className="input-field pl-10"
               />
             </div>
           </div>
