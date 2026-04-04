@@ -1,10 +1,12 @@
 const { Sequelize } = require('sequelize');
 
+const isLocal = process.env.DATABASE_URL.includes('localhost') || process.env.DATABASE_URL.includes('127.0.0.1');
+
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
   logging: false,
   dialectOptions: {
-    ssl: {
+    ssl: isLocal ? false : {
       require: true,
       rejectUnauthorized: false
     }
